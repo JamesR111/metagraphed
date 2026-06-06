@@ -10,6 +10,20 @@ Metagraphed extends the native Bittensor metagraph with public interface and hea
 
 It does not replace protocol state, explorer analytics, subnet docs, validator dashboards, or RPC providers. It sits beside them as an operational interface registry.
 
+## Registry Coverage
+
+The registry is chain-first. Every active Finney netuid should appear from decoded native Bittensor/Subtensor data before any custom subnet integration exists.
+
+This gives Metagraphed complete coverage without pretending every subnet has verified public APIs. Native-only entries are useful as indexable stubs, and curated overlays add interfaces only when they have been reviewed.
+
+Coverage levels:
+
+- `native-only`: active chain subnet with no verified public interface metadata yet;
+- `manifested`: curated interface metadata exists;
+- `probed`: curated interface metadata exists and at least one safe probe is configured.
+
+Third-party APIs can enrich candidates, labels, and cross-check counts, but they are not canonical for active subnet existence.
+
 ## Product Layers
 
 ### Native Metagraph Layer
@@ -18,13 +32,13 @@ Universal Bittensor state for every subnet:
 
 - netuid;
 - subnet identity;
+- symbol;
 - participant counts;
-- axons;
-- validators and miners where inferable;
-- emissions;
-- validator permits;
-- activity;
-- tempo and update timing.
+- registration block;
+- mechanism count;
+- tempo and block timing.
+
+The MVP intentionally avoids publishing owner keys or validator-sensitive details even when they are chain-public.
 
 ### Interface Metagraph Layer
 
@@ -90,3 +104,9 @@ Metagraphed must not ingest or publish:
 - user-specific operational state.
 
 Everything in the MVP should be public, read-only, and safe to probe.
+
+## Intake Boundary
+
+Community submissions and third-party discovery go into a candidate queue first.
+
+Schema-valid means the submission can be reviewed. It does not mean the interface is verified or published. Promotion into a curated overlay requires maintainer review of source support, public accessibility, auth/rate-limit labels, and probe safety.

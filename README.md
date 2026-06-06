@@ -33,9 +33,24 @@ Example future routes:
 - not another alpha dashboard, docs encyclopedia, or generic RPC provider;
 - not a validator credential, wallet, or private scoring mirror.
 
-## Pilot Scope
+## Registry Coverage
 
-The initial pilot tracks:
+Metagraphed is chain-first:
+
+- every active Finney netuid gets a native stub entry from decoded Bittensor/Subtensor data;
+- root `netuid: 0` is included and labeled as root/system;
+- curated overlays add public interface metadata only after review;
+- third-party APIs are enrichment/candidate sources, not canonical existence sources.
+
+Coverage levels:
+
+- `native-only`: chain-derived subnet entry, no verified public interface metadata yet;
+- `manifested`: curated interface metadata exists, but no default probe is enabled;
+- `probed`: curated interface metadata exists and at least one safe read-only probe is configured.
+
+## Pilot Overlays
+
+The initial rich overlays track:
 
 - Allways SN7: API health, protocol state, network overview, miners, leaderboard, reliability, events, crown data, and SSE.
 - Gittensor SN74: public docs, repository registration surfaces, bounty/contribution metadata concepts, maintainer-cut metadata concepts, and public-safe aggregate registry surfaces.
@@ -51,6 +66,8 @@ Generated public artifacts live under `public/metagraph`:
 - `providers.json`
 - `metagraph/latest.json`
 - `health/latest.json`
+- `coverage.json`
+- `subnets/{netuid}.json`
 - `adapters/allways.json`
 - `adapters/gittensor.json`
 - `build-summary.json`
@@ -64,8 +81,11 @@ npm run validate
 npm test
 npm run build
 npm run scan:public-safety
+npm run sync:subnets:dry-run
 npm run probes:smoke
 ```
+
+`sync:subnets` uses the Bittensor Python SDK through `uvx` to fetch decoded native Finney subnet metadata without committing Python dependencies to this repo.
 
 `probes:smoke` performs read-only checks against public surfaces. It does not submit transactions, mutate subnet state, send wallet data, or use credentials.
 
@@ -73,8 +93,10 @@ npm run probes:smoke
 
 ```text
 docs/                 product and operating notes
+registry/native/      generated chain-derived subnet snapshots
+registry/candidates/  unverified interface candidates pending review
 registry/providers/   provider metadata
-registry/subnets/     canonical subnet manifests
+registry/subnets/     curated subnet interface overlays
 schemas/              public JSON schema contracts
 scripts/              validation, artifact generation, probe, and safety scripts
 public/metagraph/     generated public JSON artifacts

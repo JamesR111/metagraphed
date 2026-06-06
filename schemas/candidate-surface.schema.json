@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://metagraph.sh/schemas/candidate-surface.schema.json",
+  "title": "Metagraphed Candidate Surface",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "id",
+    "netuid",
+    "state",
+    "name",
+    "kind",
+    "url",
+    "source_url",
+    "provider",
+    "auth_required",
+    "public_safe"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "netuid": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "state": {
+      "enum": [
+        "schema-invalid",
+        "schema-valid",
+        "maintainer-review",
+        "verified",
+        "stale",
+        "rejected"
+      ]
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "enum": [
+        "subtensor-rpc",
+        "subtensor-wss",
+        "subnet-api",
+        "openapi",
+        "sse",
+        "dashboard",
+        "repo-registry",
+        "docs",
+        "data-artifact"
+      ]
+    },
+    "url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "provider": {
+      "type": "string"
+    },
+    "auth_required": {
+      "type": "boolean"
+    },
+    "public_safe": {
+      "type": "boolean"
+    },
+    "rate_limit_notes": {
+      "type": "string"
+    },
+    "review_notes": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "generated_at": "1970-01-01T00:00:00.000Z",
+  "schema_version": 1,
+  "subnet": {
+    "block": 8344198,
+    "categories": [
+      "native-only"
+    ],
+    "coverage_level": "native-only",
+    "dashboard_url": null,
+    "docs_url": null,
+    "mechanism_count": 1,
+    "name": "Quasar",
+    "native_name": "Quasar",
+    "native_slug": "quasar",
+    "netuid": 24,
+    "notes": null,
+    "participant_count": 256,
+    "probed_surface_count": 0,
+    "provenance": {
+      "existence": {
+        "authority": "native-chain",
+        "captured_at": "2026-06-06T01:19:40Z",
+        "method": "SubtensorApi.metagraphs.get_all_metagraphs_info(all_mechanisms=True)",
+        "network": "finney",
+        "source_kind": "bittensor-sdk"
+      },
+      "interface_metadata": "none"
+    },
+    "registered_at_block": 2538424,
+    "slug": "sn-24",
+    "source_repo": null,
+    "status": "active",
+    "subnet_type": "application",
+    "surface_count": 0,
+    "symbol": "ω",
+    "tempo": 360
+  },
+  "surfaces": []
+}

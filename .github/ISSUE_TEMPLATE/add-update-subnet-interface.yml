@@ -1,0 +1,91 @@
+name: Add or update subnet interface
+description: Submit a public subnet API, docs, dashboard, OpenAPI, SSE, repository, or data artifact candidate.
+title: "interface: "
+labels:
+  - interface-submission
+  - maintainer-review
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Metagraphed. Schema-valid submissions are not auto-published; a maintainer still reviews source facts, auth requirements, and probe safety before promotion into the curated registry.
+  - type: input
+    id: netuid
+    attributes:
+      label: Netuid
+      description: Bittensor subnet netuid for this interface.
+      placeholder: "7"
+    validations:
+      required: true
+  - type: input
+    id: subnet_name
+    attributes:
+      label: Subnet name
+      placeholder: Allways
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: Interface kind
+      options:
+        - subnet-api
+        - openapi
+        - sse
+        - dashboard
+        - repo-registry
+        - docs
+        - data-artifact
+        - subtensor-rpc
+        - subtensor-wss
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: Public URL
+      description: The exact public interface URL to list or update.
+      placeholder: https://example.com/api
+    validations:
+      required: true
+  - type: input
+    id: source_url
+    attributes:
+      label: Source URL
+      description: Public docs, repository, or announcement supporting the interface claim.
+      placeholder: https://docs.example.com/api
+    validations:
+      required: true
+  - type: input
+    id: provider
+    attributes:
+      label: Provider or team
+      placeholder: example-team
+    validations:
+      required: true
+  - type: dropdown
+    id: auth_required
+    attributes:
+      label: Does this interface require authentication?
+      options:
+        - "no"
+        - "yes"
+        - "unknown"
+    validations:
+      required: true
+  - type: textarea
+    id: rate_limits
+    attributes:
+      label: Rate limits or access notes
+      description: Include public rate-limit notes, API-key requirements, or known access constraints.
+  - type: checkboxes
+    id: public_safety
+    attributes:
+      label: Public-safety confirmation
+      options:
+        - label: This submission does not include secrets, credentialed flows, private dashboards, or validator-sensitive data.
+          required: true
+        - label: The submitted URL can be checked with read-only probes.
+          required: true
+        - label: I understand schema-valid submissions still require maintainer review.
+          required: true

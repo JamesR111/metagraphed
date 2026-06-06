@@ -1,0 +1,41 @@
+{
+  "generated_at": "1970-01-01T00:00:00.000Z",
+  "schema_version": 1,
+  "subnet": {
+    "block": 8344198,
+    "categories": [
+      "root",
+      "system"
+    ],
+    "coverage_level": "native-only",
+    "dashboard_url": null,
+    "docs_url": null,
+    "mechanism_count": 1,
+    "name": "root",
+    "native_name": "root",
+    "native_slug": "root",
+    "netuid": 0,
+    "notes": null,
+    "participant_count": 64,
+    "probed_surface_count": 0,
+    "provenance": {
+      "existence": {
+        "authority": "native-chain",
+        "captured_at": "2026-06-06T01:19:40Z",
+        "method": "SubtensorApi.metagraphs.get_all_metagraphs_info(all_mechanisms=True)",
+        "network": "finney",
+        "source_kind": "bittensor-sdk"
+      },
+      "interface_metadata": "none"
+    },
+    "registered_at_block": 0,
+    "slug": "sn-0",
+    "source_repo": null,
+    "status": "active",
+    "subnet_type": "root",
+    "surface_count": 0,
+    "symbol": "Τ",
+    "tempo": 100
+  },
+  "surfaces": []
+}

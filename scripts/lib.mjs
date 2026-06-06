@@ -14,7 +14,15 @@ export async function writeJson(filePath, value) {
 }
 
 export async function listJsonFiles(dirPath) {
-  const entries = await fs.readdir(dirPath, { withFileTypes: true });
+  let entries;
+  try {
+    entries = await fs.readdir(dirPath, { withFileTypes: true });
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      return [];
+    }
+    throw error;
+  }
   return entries
     .filter((entry) => entry.isFile() && entry.name.endsWith(".json"))
     .map((entry) => path.join(dirPath, entry.name))
@@ -30,6 +38,16 @@ export async function loadSubnets() {
   const files = await listJsonFiles(path.join(repoRoot, "registry/subnets"));
   const subnets = await Promise.all(files.map(readJson));
   return subnets.sort((a, b) => a.netuid - b.netuid || a.slug.localeCompare(b.slug));
+}
+
+export async function loadNativeSnapshot() {
+  return readJson(path.join(repoRoot, "registry/native/finney-subnets.json"));
+}
+
+export async function loadCandidates() {
+  const files = await listJsonFiles(path.join(repoRoot, "registry/candidates"));
+  const candidates = await Promise.all(files.map(readJson));
+  return candidates.sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export function flattenSurfaces(subnets) {
@@ -76,4 +94,14 @@ export function isValidUrl(value) {
 
 export function buildTimestamp() {
   return process.env.METAGRAPH_BUILD_TIMESTAMP || "1970-01-01T00:00:00.000Z";
+}
+
+export function slugify(value) {
+  return String(value || "")
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .replace(/-{2,}/g, "-");
 }

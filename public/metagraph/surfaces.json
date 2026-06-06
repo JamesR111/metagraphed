@@ -1,5 +1,6 @@
 {
   "generated_at": "1970-01-01T00:00:00.000Z",
+  "notes": "Curated and verified public interface surfaces only. Native-only subnet stubs do not invent surfaces.",
   "schema_version": 1,
   "surfaces": [
     {

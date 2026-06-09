@@ -47,6 +47,32 @@ describe("Worker runtime", () => {
     const body = await response.json();
     assert.equal(body.ok, true);
     assert.equal(body.data.subnet.netuid, 7);
+    // published_at is null when no control KV pointer is bound.
+    assert.equal(body.meta.published_at, null);
+  });
+
+  test("surfaces meta.published_at from the KV latest pointer", async () => {
+    const publishedAt = "2026-06-09T13:57:16.231Z";
+    const controlEnv = {
+      ...env,
+      METAGRAPH_CONTROL: {
+        async get(key, options) {
+          assert.equal(key, "metagraph:latest");
+          assert.equal(options?.type, "json");
+          return { latest_prefix: "latest/", published_at: publishedAt };
+        },
+      },
+    };
+    const response = await handleRequest(
+      new Request("https://metagraph.sh/api/v1/subnets/7"),
+      controlEnv,
+      {},
+    );
+    assert.equal(response.status, 200);
+    const body = await response.json();
+    assert.equal(body.meta.published_at, publishedAt);
+    // generated_at stays the deterministic content marker, distinct from it.
+    assert.notEqual(body.meta.generated_at, publishedAt);
   });
 
   test("serves raw R2-tier artifacts from archive storage", async () => {

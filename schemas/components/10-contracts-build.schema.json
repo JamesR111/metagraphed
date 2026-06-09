@@ -333,6 +333,11 @@
               "surface_count"
             ],
             "properties": {
+              "published_at": {
+                "type": ["string", "null"],
+                "format": "date-time",
+                "description": "Real wall-clock time this artifact set was published to production, distinct from the deterministic generated_at build stamp. Null for local/deterministic builds."
+              },
               "artifact_count": {
                 "type": "integer",
                 "minimum": 0

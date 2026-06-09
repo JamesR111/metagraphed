@@ -359,6 +359,14 @@
                 "minimum": 0,
                 "type": "integer"
               },
+              "published_at": {
+                "description": "Real wall-clock time this artifact set was published to production, distinct from the deterministic generated_at build stamp. Null for local/deterministic builds.",
+                "format": "date-time",
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
               "subnet_count": {
                 "minimum": 0,
                 "type": "integer"
@@ -2877,6 +2885,7 @@
             "type": "string"
           },
           "generated_at": {
+            "description": "Deterministic build content marker (epoch by default); not a wall clock. Use published_at for human-facing freshness.",
             "type": [
               "string",
               "null"
@@ -2884,6 +2893,14 @@
           },
           "pagination": {
             "$ref": "#/components/schemas/PaginationMeta"
+          },
+          "published_at": {
+            "description": "Real publish time from the KV latest pointer, distinct from generated_at. Null before the first publish or when the control KV is unbound.",
+            "format": "date-time",
+            "type": [
+              "string",
+              "null"
+            ]
           },
           "source": {
             "type": "string"

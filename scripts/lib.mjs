@@ -557,6 +557,18 @@ export function buildTimestamp() {
   return process.env.METAGRAPH_BUILD_TIMESTAMP || "1970-01-01T00:00:00.000Z";
 }
 
+// Real wall-clock publish time, distinct from the deterministic build stamp.
+// `buildTimestamp()` stays reproducible (epoch by default) so artifact hashing
+// and changelog diffs are stable; `publishedAt()` carries the true publish
+// moment for consumer-facing freshness. It is null for local/deterministic
+// builds (honest: "not published") and set by the publish workflow via
+// METAGRAPH_PUBLISHED_AT. It must only be written to artifacts that are
+// excluded from the deterministic digest set (e.g. build-summary.json).
+export function publishedAt() {
+  const value = (process.env.METAGRAPH_PUBLISHED_AT || "").trim();
+  return value || null;
+}
+
 export const README_LINK_LIMIT = 5;
 
 export const README_KIND_LIMITS = {

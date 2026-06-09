@@ -13,6 +13,9 @@ const write = args.has("--write");
 const manifest = await readJson(
   path.join(repoRoot, "public/metagraph/r2-manifest.json"),
 );
+const buildSummary = await readJson(
+  path.join(repoRoot, "public/metagraph/build-summary.json"),
+);
 const freshness = await readJson(
   path.join(repoRoot, "public/metagraph/freshness.json"),
 );
@@ -22,6 +25,10 @@ const sourceHealth = await readJson(artifactFilePath("source-health.json"));
 const pointer = {
   contract_version: manifest.contract_version,
   generated_at: manifest.generated_at,
+  // Real wall-clock publish time (distinct from the deterministic generated_at
+  // build stamp). The Worker surfaces this as meta.published_at so consumers
+  // read true freshness instead of the epoch content marker.
+  published_at: buildSummary.published_at || null,
   latest_prefix: manifest.latest_prefix,
   run_prefix: manifest.run_prefix,
   manifest_hash: hashJson(manifest),

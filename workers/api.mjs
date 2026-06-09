@@ -171,6 +171,10 @@ async function handleApiRequest(request, env, url) {
         cache: matched.cache,
         contract_version: contractVersion(env),
         generated_at: artifact.data?.generated_at || null,
+        // Real publish time from the KV latest pointer; null until a publish has
+        // populated it. Unlike generated_at (a deterministic content marker),
+        // this is safe to render as a human "last updated" timestamp.
+        published_at: await publishedAt(env),
         source: artifact.source,
         ...transformed.meta,
       },
@@ -438,6 +442,15 @@ async function latestPointer(env) {
   } catch {
     return null;
   }
+}
+
+// Real publish timestamp for envelope meta, read from the KV latest pointer.
+// API routes are edge-cached (cache-control max-age + stale-while-revalidate),
+// so this KV read only happens on origin misses. Returns null when KV is
+// unbound or the pointer predates published_at support.
+async function publishedAt(env) {
+  const pointer = await latestPointer(env);
+  return pointer?.published_at || null;
 }
 
 function applyQueryFilters(data, url, queryCollection, queryFilterNames = []) {

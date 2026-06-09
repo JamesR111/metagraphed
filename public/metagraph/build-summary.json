@@ -7,7 +7,7 @@
   },
   "artifact_budgets": [],
   "artifact_count": 22,
-  "artifact_size_bytes": 5152870,
+  "artifact_size_bytes": 5152073,
   "artifacts": [
     {
       "path": "api-index.json",
@@ -17,8 +17,8 @@
     },
     {
       "path": "changelog.json",
-      "sha256": "98d7ee2b6712b01a2b57353afc85bd15783dfb37ad37cdfde5f6077f669e56ac",
-      "size_bytes": 3000,
+      "sha256": "1fd2f072e82d3d15565cfc2a502035fc589830c112b6e030a706b272ab5e59f1",
+      "size_bytes": 1347,
       "storage_tier": "dual"
     },
     {
@@ -59,8 +59,8 @@
     },
     {
       "path": "openapi.json",
-      "sha256": "98b965c69c28222adc78bc2db38360c70e672295e8549f6e5949dfb45161f8fd",
-      "size_bytes": 365182,
+      "sha256": "462542d854c4cd0735afb71efcdbbfab76bfd5fa081ecf76342b89d6e52ae8b1",
+      "size_bytes": 366038,
       "storage_tier": "dual"
     },
     {
@@ -182,7 +182,7 @@
   },
   "endpoint_count": 1140,
   "full_artifact_count": 1272,
-  "full_artifact_size_bytes": 34844043,
+  "full_artifact_size_bytes": 48930638,
   "generated_at": "1970-01-01T00:00:00.000Z",
   "profile_count": 129,
   "provider_count": 90,
@@ -190,6 +190,7 @@
     "url": "/metagraph/contracts.json",
     "version": "2026-06-06.1"
   },
+  "published_at": null,
   "schema_version": 1,
   "storage_tier_counts": {
     "dual": 21,
@@ -197,9 +198,9 @@
     "r2": 1250
   },
   "storage_tier_size_bytes": {
-    "dual": 4893859,
+    "dual": 4893062,
     "git": 259011,
-    "r2": 29691173
+    "r2": 43778565
   },
   "subnet_count": 129,
   "surface_count": 1140

@@ -71,7 +71,13 @@
             "type": "string"
           },
           "generated_at": {
-            "type": ["string", "null"]
+            "type": ["string", "null"],
+            "description": "Deterministic build content marker (epoch by default); not a wall clock. Use published_at for human-facing freshness."
+          },
+          "published_at": {
+            "type": ["string", "null"],
+            "format": "date-time",
+            "description": "Real publish time from the KV latest pointer, distinct from generated_at. Null before the first publish or when the control KV is unbound."
           },
           "pagination": {
             "$ref": "#/components/schemas/PaginationMeta"

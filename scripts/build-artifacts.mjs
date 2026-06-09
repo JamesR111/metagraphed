@@ -19,6 +19,7 @@ import {
   nativeDisplayName,
   nativeNameQuality,
   normalizePublicUrl,
+  publishedAt,
   readJson,
   redactCredentialedUrls,
   repoRoot,
@@ -778,6 +779,10 @@ await writeJson(artifactFile("build-summary.json"), {
   schema_version: 1,
   contract_version: contractVersion,
   generated_at: generatedAt,
+  // Real publish time (null for deterministic/local builds). build-summary.json
+  // is excluded from the artifact digest set, so this never perturbs hashing
+  // or the changelog while still giving consumers honest freshness.
+  published_at: publishedAt(),
   adapter_count: Object.keys(adapterArtifacts).length,
   artifact_count: reviewArtifactSizes.length,
   artifact_size_bytes: reviewArtifactSizes.reduce(

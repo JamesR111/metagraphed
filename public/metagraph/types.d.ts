@@ -793,6 +793,11 @@ export interface components {
             artifact_size_bytes: number;
             candidate_count?: number;
             provider_count?: number;
+            /**
+             * Format: date-time
+             * @description Real wall-clock time this artifact set was published to production, distinct from the deterministic generated_at build stamp. Null for local/deterministic builds.
+             */
+            published_at?: string | null;
             subnet_count: number;
             surface_count: number;
         } & {
@@ -1404,8 +1409,14 @@ export interface components {
             artifact_path?: string;
             cache?: components["schemas"]["CacheProfile"];
             contract_version: string;
+            /** @description Deterministic build content marker (epoch by default); not a wall clock. Use published_at for human-facing freshness. */
             generated_at?: string | null;
             pagination?: components["schemas"]["PaginationMeta"];
+            /**
+             * Format: date-time
+             * @description Real publish time from the KV latest pointer, distinct from generated_at. Null before the first publish or when the control KV is unbound.
+             */
+            published_at?: string | null;
             source?: string;
         } & {
             [key: string]: unknown;

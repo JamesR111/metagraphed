@@ -13437,8 +13437,8 @@ describe("MCP parity tools — subnet history / events (D1-backed)", () => {
     assert.equal(out.points[0].snapshot_date, "2026-06-26");
     assert.equal(out.points[0].subnet_count, 3);
     assert.equal(out.points[0].rewards_per_1000_tao, 5);
-    const q = capture.find(
-      (c) => /hotkey = \? AND validator_permit = 1/.test(c.sql),
+    const q = capture.find((c) =>
+      /hotkey = \? AND validator_permit = 1/.test(c.sql),
     );
     assert.ok(q);
     assert.ok(q.params.includes(HOTKEY));
@@ -13455,8 +13455,8 @@ describe("MCP parity tools — subnet history / events (D1-backed)", () => {
       { env },
     );
     assert.equal(res.body.result.structuredContent.window, "all");
-    const q = capture.find(
-      (c) => /hotkey = \? AND validator_permit = 1/.test(c.sql),
+    const q = capture.find((c) =>
+      /hotkey = \? AND validator_permit = 1/.test(c.sql),
     );
     assert.equal(q.params.length, 2);
     assert.ok(!q.params.some((p) => /^\d{4}-\d{2}-\d{2}$/.test(p)));
@@ -13465,7 +13465,11 @@ describe("MCP parity tools — subnet history / events (D1-backed)", () => {
   test("get_validator_history defaults to the 30d window when omitted", async () => {
     const HOTKEY = "5G9hfkx9wGB1CLMT9WXkpHSAiYzjZb5o1Boyq4KAdDhjwrc5";
     const env = parityD1({ dailyAgg: [] });
-    const res = await callTool("get_validator_history", { hotkey: HOTKEY }, { env });
+    const res = await callTool(
+      "get_validator_history",
+      { hotkey: HOTKEY },
+      { env },
+    );
     assert.equal(res.body.result.structuredContent.window, "30d");
   });
 

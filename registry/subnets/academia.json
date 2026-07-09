@@ -70,6 +70,25 @@
         "timeout_ms": 10000
       },
       "notes": "Public Academia archives dataset repository for Bittensor historical subnet/archive data."
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "id": "sn-109-academia-roadmap",
+      "kind": "data-artifact",
+      "name": "Academia public roadmap document",
+      "notes": "Public no-auth Markdown roadmap published in the official fx-integral/academia repository at ROADMAP.md. Documents SN109 Academia's incubation-academy vision, program principles, builder journey, 2026 quarterly milestones (Q2 foundation, Q3 cohort incubation, Q4 graduation pathway), and subnet spinout model. The repository README lists a public roadmap with milestones among forthcoming docs; distinct from the academia-archives dataset surface.",
+      "provider": "academia",
+      "public_safe": true,
+      "review": {
+        "state": "community-submitted",
+        "submitted_by": "carlh7777"
+      },
+      "source_urls": [
+        "https://github.com/fx-integral/academia/blob/main/ROADMAP.md",
+        "https://github.com/fx-integral/academia/blob/main/README.md"
+      ],
+      "url": "https://raw.githubusercontent.com/fx-integral/academia/main/ROADMAP.md"
     }
   ]
 }

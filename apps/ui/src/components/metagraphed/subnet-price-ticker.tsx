@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { useSuspenseQuery, useQueries } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Coins } from "lucide-react";
+import { ChevronRight, Coins } from "lucide-react";
 import { BrandIcon, Sparkline } from "@jsonbored/ui-kit";
 import { economicsQuery, subnetsQuery, subnetTrajectoryQuery } from "@/lib/metagraphed/queries";
 import { healthColorVar } from "@/lib/health-tokens";
@@ -25,6 +25,13 @@ function priceStr(v?: number) {
  * Price history comes from each subnet's /trajectory series (alpha_price_tao), fetched
  * non-blocking via useQueries so the marquee paints immediately on the current price
  * and the trends fill in as they load (and as the price backfill deepens the history).
+ *
+ * Layout (#5325): an `overflow-x-auto` scrollport holds the marquee track (so the
+ * mid-word clip is reachably scrollable, and the responsive-overflow check treats it
+ * as contained), while edge fades + a right chevron sit as siblings outside that
+ * scrollport so they stay pinned as intentional continuation affordances. Deliberately
+ * does NOT reuse the shared `.mg-ticker` strip class — that class's flex layout fights
+ * the overlay fade/chevron structure.
  */
 export function SubnetPriceTicker({ limit = 12 }: { limit?: number }) {
   const { data: ecoRes } = useSuspenseQuery(economicsQuery());
@@ -82,81 +89,93 @@ export function SubnetPriceTicker({ limit = 12 }: { limit?: number }) {
 
   return (
     <div
-      className="mg-ticker mg-fade-in mg-fade-in-delay-3 mt-3 relative overflow-hidden border-y border-border/60"
+      className="mg-fade-in mg-fade-in-delay-3 mt-3 relative border-y border-border/60"
       aria-label="Subnet alpha prices"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div
-        className="mg-ticker-track flex items-center gap-6 py-2 whitespace-nowrap"
-        style={{ animationPlayState: paused ? "paused" : "running" }}
-      >
-        {rendered.map(({ it, t }, i) => {
-          const arrow = t.dir > 0 ? "▲" : t.dir < 0 ? "▼" : "";
-          return (
-            <Link
-              key={`${it.netuid}-${i}`}
-              to="/subnets/$netuid"
-              params={{ netuid: it.netuid }}
-              className="inline-flex items-center gap-2 text-[11px] hover:text-ink-strong transition-colors"
-              title={`${it.name} · SN${it.netuid} · ${priceStr(it.price)}${
-                t.changePct != null
-                  ? ` · ${t.changePct >= 0 ? "+" : ""}${t.changePct.toFixed(1)}%`
-                  : ""
-              }`}
-            >
-              <BrandIcon
-                size={16}
-                name={it.name}
-                fallback={it.netuid}
-                url={it.website}
-                subnetSlug={it.slug}
-                netuid={it.netuid}
-              />
-              <span className="font-medium text-ink-strong truncate max-w-[16ch]">{it.name}</span>
-              <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
-                SN{it.netuid}
-              </span>
-              <span className="font-display font-semibold tabular-nums text-ink-strong">
-                {priceStr(it.price)}
-              </span>
-              <span className="inline-block w-[44px] align-middle">
-                <Sparkline
-                  values={t.values}
-                  width={44}
-                  height={14}
-                  interactive={false}
-                  fill={false}
-                  color={t.color}
+      {/* Scrollport — overflow-x:auto (scrollbar hidden) so clipped items are reachably
+          scrollable and the responsive-overflow e2e treats the track as contained. */}
+      <div className="overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        <div
+          className="mg-ticker-track flex items-center gap-6 py-2 pl-16 pr-10 whitespace-nowrap"
+          style={{ animationPlayState: paused ? "paused" : "running" }}
+        >
+          {rendered.map(({ it, t }, i) => {
+            const arrow = t.dir > 0 ? "▲" : t.dir < 0 ? "▼" : "";
+            return (
+              <Link
+                key={`${it.netuid}-${i}`}
+                to="/subnets/$netuid"
+                params={{ netuid: it.netuid }}
+                className="inline-flex items-center gap-2 text-[11px] hover:text-ink-strong transition-colors"
+                title={`${it.name} · SN${it.netuid} · ${priceStr(it.price)}${
+                  t.changePct != null
+                    ? ` · ${t.changePct >= 0 ? "+" : ""}${t.changePct.toFixed(1)}%`
+                    : ""
+                }`}
+              >
+                <BrandIcon
+                  size={16}
+                  name={it.name}
+                  fallback={it.netuid}
+                  url={it.website}
+                  subnetSlug={it.slug}
+                  netuid={it.netuid}
                 />
-              </span>
-              {t.changePct != null ? (
-                <span className="font-mono tabular-nums text-[10px]" style={{ color: t.color }}>
-                  {arrow} {t.changePct >= 0 ? "+" : ""}
-                  {t.changePct.toFixed(1)}%
+                <span className="font-medium text-ink-strong truncate max-w-[16ch]">{it.name}</span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
+                  SN{it.netuid}
                 </span>
-              ) : null}
-              <span aria-hidden className="text-ink-subtle">
-                ·
-              </span>
-            </Link>
-          );
-        })}
+                <span className="font-display font-semibold tabular-nums text-ink-strong">
+                  {priceStr(it.price)}
+                </span>
+                <span className="inline-block w-[44px] align-middle">
+                  <Sparkline
+                    values={t.values}
+                    width={44}
+                    height={14}
+                    interactive={false}
+                    fill={false}
+                    color={t.color}
+                  />
+                </span>
+                {t.changePct != null ? (
+                  <span className="font-mono tabular-nums text-[10px]" style={{ color: t.color }}>
+                    {arrow} {t.changePct >= 0 ? "+" : ""}
+                    {t.changePct.toFixed(1)}%
+                  </span>
+                ) : null}
+                <span aria-hidden className="text-ink-subtle">
+                  ·
+                </span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
+      {/* Edge affordances sit outside the scrollport so they stay pinned at the
+          visible edges while the track moves / the user scrolls. */}
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-paper to-transparent"
+        className="pointer-events-none absolute inset-y-0 left-0 z-10 w-16 bg-gradient-to-r from-paper via-paper/85 to-transparent"
       />
       <span
         aria-hidden
-        className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-paper to-transparent"
-      />
-      <span
-        aria-hidden
-        className="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted bg-paper px-1.5"
+        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 inline-flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.18em] text-ink-muted bg-paper px-1.5"
       >
         <Coins className="size-2.5" />
         alpha
+      </span>
+      <span
+        aria-hidden
+        className="pointer-events-none absolute inset-y-0 right-0 z-10 w-20 bg-gradient-to-l from-paper via-paper/90 to-transparent"
+      />
+      <span
+        aria-hidden
+        className="pointer-events-none absolute right-1.5 top-1/2 z-20 -translate-y-1/2 text-ink-muted"
+      >
+        <ChevronRight className="size-3.5" strokeWidth={2} />
       </span>
     </div>
   );

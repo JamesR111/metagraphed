@@ -755,6 +755,7 @@ export class ChainFirehoseHub {
         "content-type": "text/event-stream",
         "cache-control": "no-store",
         "access-control-allow-origin": "*",
+        "x-content-type-options": "nosniff",
         connection: "keep-alive",
       },
     });

@@ -331,6 +331,9 @@ test("handleStream: opens an SSE stream, flushing any pending notification immed
   );
   assert.equal(res.status, 200);
   assert.equal(res.headers.get("content-type"), "text/event-stream");
+  // #5545: every text/event-stream response must carry nosniff, matching the
+  // workers/api.mjs SSE precedent and every other response-header builder.
+  assert.equal(res.headers.get("x-content-type-options"), "nosniff");
   const reader = res.body.getReader();
   const { value } = await reader.read();
   const text = new TextDecoder().decode(value);

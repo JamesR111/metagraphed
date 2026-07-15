@@ -1170,6 +1170,8 @@ describe("MCP transport handling", () => {
       });
       assert.equal(response.status, 200);
       assert.equal(response.headers.get("content-type"), "text/event-stream");
+      // #5545: SSE responses must carry nosniff like every other builder.
+      assert.equal(response.headers.get("x-content-type-options"), "nosniff");
       assert.equal(hub.calls.length, 1);
       assert.match(hub.calls[0].url, /\/stream\?sessionId=/);
       assert.match(

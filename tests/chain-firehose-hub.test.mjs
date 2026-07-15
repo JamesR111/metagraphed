@@ -543,6 +543,8 @@ test("ChainFirehoseHub /subscribe (SSE): responds with a text/event-stream and a
   assert.equal(res.status, 200);
   assert.equal(res.headers.get("content-type"), "text/event-stream");
   assert.equal(res.headers.get("cache-control"), "no-store");
+  // #5545: SSE responses must carry nosniff like every other response builder.
+  assert.equal(res.headers.get("x-content-type-options"), "nosniff");
   const reader = res.body.getReader();
   const { value } = await reader.read();
   assert.equal(new TextDecoder().decode(value), ": connected\n\n");

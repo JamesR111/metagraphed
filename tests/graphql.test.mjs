@@ -5696,6 +5696,127 @@ describe("graphql — subnet_movers (#5662, Postgres-tier + buildMovers fallback
   });
 });
 
+describe("graphql — chain_turnover (#5686, Postgres-tier + cold-store fallback)", () => {
+  function turnoverQuery(argsClause) {
+    return `{ chain_turnover${argsClause} {
+      schema_version window start_date end_date comparable subnet_count
+      network { validators_start validators_end validators_entered validators_exited validator_retention stability_score }
+      stability_distribution { count mean min p25 median p75 p90 max }
+      subnets { netuid validators_start validators_end validators_entered validators_exited validator_retention stability_score }
+    } }`;
+  }
+
+  test("cold store, default args: schema-stable non-comparable empty leaderboard", async () => {
+    const { status, body } = await gql(turnoverQuery(""));
+    assert.equal(status, 200);
+    assert.deepEqual(body.data.chain_turnover, {
+      schema_version: 1,
+      window: "30d",
+      start_date: null,
+      end_date: null,
+      comparable: false,
+      subnet_count: 0,
+      network: {
+        validators_start: 0,
+        validators_end: 0,
+        validators_entered: 0,
+        validators_exited: 0,
+        validator_retention: null,
+        stability_score: null,
+      },
+      stability_distribution: null,
+      subnets: [],
+    });
+  });
+
+  test("resolves Postgres-tier data for a valid non-default window/limit, forwarding both as query params", async () => {
+    let capturedUrl;
+    const env = {
+      METAGRAPH_NEURONS_SOURCE: "postgres",
+      DATA_API: {
+        fetch: async (r) => {
+          capturedUrl = new URL(r.url);
+          return Response.json({
+            schema_version: 1,
+            window: "7d",
+            start_date: "2026-07-03",
+            end_date: "2026-07-10",
+            comparable: true,
+            subnet_count: 1,
+            network: {
+              validators_start: 10,
+              validators_end: 12,
+              validators_entered: 4,
+              validators_exited: 2,
+              validator_retention: 0.67,
+              stability_score: 67,
+            },
+            stability_distribution: {
+              count: 1,
+              mean: 67,
+              min: 67,
+              p25: 67,
+              median: 67,
+              p75: 67,
+              p90: 67,
+              max: 67,
+            },
+            subnets: [
+              {
+                netuid: 3,
+                validators_start: 10,
+                validators_end: 12,
+                validators_entered: 4,
+                validators_exited: 2,
+                validator_retention: 0.67,
+                stability_score: 67,
+              },
+            ],
+          });
+        },
+      },
+    };
+    const { status, body } = await gql(
+      turnoverQuery('(window: "7d", limit: 5)'),
+      env,
+    );
+    assert.equal(status, 200);
+    assert.equal(capturedUrl.pathname, "/api/v1/chain/turnover");
+    assert.equal(capturedUrl.searchParams.get("window"), "7d");
+    assert.equal(capturedUrl.searchParams.get("limit"), "5");
+    assert.equal(body.data.chain_turnover.window, "7d");
+    assert.equal(body.data.chain_turnover.comparable, true);
+    assert.equal(body.data.chain_turnover.subnet_count, 1);
+    assert.equal(body.data.chain_turnover.network.validators_entered, 4);
+    assert.equal(body.data.chain_turnover.stability_distribution.median, 67);
+    assert.equal(body.data.chain_turnover.subnets[0].netuid, 3);
+  });
+
+  test("a malformed Postgres-tier body falls back to schema-stable defaults (no throw)", async () => {
+    const env = {
+      METAGRAPH_NEURONS_SOURCE: "postgres",
+      DATA_API: { fetch: async () => Response.json({}) },
+    };
+    const { status, body } = await gql(turnoverQuery(""), env);
+    assert.equal(status, 200);
+    assert.equal(body.data.chain_turnover.window, "30d");
+    assert.equal(body.data.chain_turnover.comparable, false);
+    assert.equal(body.data.chain_turnover.subnet_count, 0);
+    assert.equal(body.data.chain_turnover.network.validators_start, 0);
+    assert.equal(body.data.chain_turnover.network.validator_retention, null);
+    assert.equal(body.data.chain_turnover.stability_distribution, null);
+    assert.deepEqual(body.data.chain_turnover.subnets, []);
+  });
+
+  test("an unsupported window is a GraphQL error, not a silently substituted default", async () => {
+    const { status, body } = await gql(turnoverQuery('(window: "99d")'));
+    assert.equal(status, 200);
+    assert.equal(body.data, null);
+    assert.match(body.errors[0].message, /99d/);
+    assert.equal(body.errors[0].extensions.code, "BAD_USER_INPUT");
+  });
+});
+
 describe("graphql — chain_weights (#5689, Postgres-tier + D1-live fallback)", () => {
   function weightsQuery(argsClause) {
     return `{ chain_weights${argsClause} {

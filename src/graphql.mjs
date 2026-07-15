@@ -150,6 +150,13 @@ import {
   loadChainWeights,
 } from "./chain-weights.mjs";
 import {
+  buildChainTurnover,
+  CHAIN_TURNOVER_LIMIT_DEFAULT,
+  CHAIN_TURNOVER_LIMIT_MAX,
+  CHAIN_TURNOVER_WINDOWS,
+  DEFAULT_CHAIN_TURNOVER_WINDOW,
+} from "./chain-turnover.mjs";
+import {
   CHAIN_WEIGHT_SETTERS_LIMIT_DEFAULT,
   CHAIN_WEIGHT_SETTERS_LIMIT_MAX,
   CHAIN_WEIGHT_SETTERS_WINDOWS,
@@ -251,6 +258,8 @@ export const SDL = `
     economics_trends(window: String): EconomicsTrends!
     "Cross-subnet momentum leaderboard: every subnet ranked by its stake/emission/validator change between a window's start and end snapshots; movers is empty on a cold or single-snapshot store, never null. Mirrors GET /api/v1/subnets/movers."
     subnet_movers(window: String, sort: String, limit: Int): SubnetMovers!
+    "Network-wide validator-set churn across all subnets over a 7d/30d/90d window (default 30d): every subnet ranked by gross validator churn (entered + exited) between the window's start and end snapshots, each with its retention and 0-100 stability score, plus a network rollup and the network-wide stability spread. neuron_daily-derived; comparable is false and the leaderboard empty on a cold or single-snapshot store, never null. Mirrors GET /api/v1/chain/turnover."
+    chain_turnover(window: String, limit: Int): ChainTurnover!
     "Network-wide validator weight-setting activity leaderboard over a 7d/30d window (default 7d): subnets ranked by WeightsSet events with each's distinct-setter count and sets-per-setter update intensity, plus a network rollup and the per-subnet intensity spread, summed live from the account_events stream. Mirrors GET /api/v1/chain/weights."
     chain_weights(window: String, limit: Int): ChainWeights!
     "Network-wide weight-setter leaderboard over a 7d/30d window (default 7d): the individual validators driving consensus network-wide, each with its total WeightsSet count, share of the network total, and first/last set times, ranked by activity. The setter-level drill-in behind chain_weights. Mirrors GET /api/v1/chain/weights/setters."
@@ -427,6 +436,58 @@ export const SDL = `
     neurons_start: Int!
     neurons_end: Int!
     neurons_delta: Int!
+  }
+
+  "Network-wide validator-set churn across all subnets (#5686). Mirrors GET /api/v1/chain/turnover's data envelope."
+  type ChainTurnover {
+    schema_version: Int!
+    window: String
+    "Start snapshot date; null on a cold store."
+    start_date: String
+    "End snapshot date; null on a cold store."
+    end_date: String
+    "False when the window resolved to fewer than two distinct snapshots, so start/end churn is not measurable."
+    comparable: Boolean!
+    subnet_count: Int!
+    network: ChainTurnoverNetwork!
+    "Null when no subnet had a stability score in the window (nothing to distribute)."
+    stability_distribution: ChainTurnoverStabilityDistribution
+    subnets: [ChainTurnoverSubnet!]!
+  }
+
+  "Network-wide validator-set rollup: every subnet's validators combined, deduplicated across the network."
+  type ChainTurnoverNetwork {
+    validators_start: Int!
+    validators_end: Int!
+    validators_entered: Int!
+    validators_exited: Int!
+    "Jaccard retention of the start set into the end set; null on a cold/non-comparable window."
+    validator_retention: Float
+    "0-100 stability score; null on a cold/non-comparable window."
+    stability_score: Float
+  }
+
+  "Spread of per-subnet stability score across EVERY subnet in the window (not just the returned page, so the spread stays network-wide when limit truncates the leaderboard)."
+  type ChainTurnoverStabilityDistribution {
+    count: Int!
+    mean: Float!
+    min: Float!
+    p25: Float!
+    median: Float!
+    p75: Float!
+    p90: Float!
+    max: Float!
+  }
+
+  "One subnet's validator-set churn, ranked by gross churn (entered + exited) then netuid."
+  type ChainTurnoverSubnet {
+    netuid: Int!
+    validators_start: Int!
+    validators_end: Int!
+    validators_entered: Int!
+    validators_exited: Int!
+    validator_retention: Float
+    stability_score: Float
   }
 
   "Network-wide validator weight-setting activity over a lookback window, summed live from the account_events WeightsSet stream. Mirrors GET /api/v1/chain/weights."
@@ -1485,6 +1546,7 @@ export const FIELD_COMPLEXITY = {
   block: RELATIONSHIP_FIELD_COMPLEXITY,
   economics_trends: RELATIONSHIP_FIELD_COMPLEXITY,
   subnet_movers: RELATIONSHIP_FIELD_COMPLEXITY,
+  chain_turnover: RELATIONSHIP_FIELD_COMPLEXITY,
   chain_weights: RELATIONSHIP_FIELD_COMPLEXITY,
   chain_weight_setters: RELATIONSHIP_FIELD_COMPLEXITY,
   health_trends: RELATIONSHIP_FIELD_COMPLEXITY,
@@ -3228,6 +3290,59 @@ const rootValue = {
         unchanged: network.unchanged ?? 0,
       },
       movers: data.movers || [],
+    };
+  },
+
+  async chain_turnover({ window, limit }, context) {
+    const requestedWindow = window ?? DEFAULT_CHAIN_TURNOVER_WINDOW;
+    if (!Object.hasOwn(CHAIN_TURNOVER_WINDOWS, requestedWindow)) {
+      throw new GraphQLError(
+        unsupportedWindowMessage(requestedWindow, CHAIN_TURNOVER_WINDOWS),
+        { extensions: { code: "BAD_USER_INPUT" } },
+      );
+    }
+    const safeLimit = clampLimit(limit, {
+      defaultLimit: CHAIN_TURNOVER_LIMIT_DEFAULT,
+      maxLimit: CHAIN_TURNOVER_LIMIT_MAX,
+    });
+    const params = new URLSearchParams();
+    params.set("window", requestedWindow);
+    params.set("limit", String(safeLimit));
+    // Same tryPostgresTier(METAGRAPH_NEURONS_SOURCE) -> buildChainTurnover([])
+    // fallback contract REST's handleChainTurnover uses: unlike the chain_weights
+    // family there is no D1 live-rollup loader here (the churn needs two
+    // neuron_daily snapshots, which only the Postgres tier serves), so a cold
+    // store yields the schema-stable empty/non-comparable envelope, never a
+    // GraphQL error.
+    const data =
+      (await tryPostgresTier(
+        context.env,
+        postgresTierRequest(context, "/api/v1/chain/turnover", params),
+        "METAGRAPH_NEURONS_SOURCE",
+      )) ??
+      buildChainTurnover([], {
+        window: requestedWindow,
+        startDate: null,
+        endDate: null,
+        limit: safeLimit,
+      });
+    return {
+      schema_version: data.schema_version ?? 1,
+      window: data.window ?? requestedWindow,
+      start_date: data.start_date ?? null,
+      end_date: data.end_date ?? null,
+      comparable: data.comparable ?? false,
+      subnet_count: data.subnet_count ?? 0,
+      network: data.network ?? {
+        validators_start: 0,
+        validators_end: 0,
+        validators_entered: 0,
+        validators_exited: 0,
+        validator_retention: null,
+        stability_score: null,
+      },
+      stability_distribution: data.stability_distribution ?? null,
+      subnets: data.subnets || [],
     };
   },
 

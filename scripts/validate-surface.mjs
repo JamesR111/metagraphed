@@ -43,10 +43,10 @@ const BASE_LAYER_KINDS = new Set(["subtensor-rpc", "subtensor-wss", "archive"]);
 // 4th instance this check additionally surfaced. Remove an entry here once
 // its underlying duplicate is actually resolved in the registry file.
 const GRANDFATHERED_DUPLICATE_URLS = new Set([
+  // 8-ball still has a same-URL website/source-repo pair; leave listed until that
+  // case is resolved separately. The allways/bitmind/gradients triples from #5736
+  // were removed, so they are no longer grandfathered.
   "8-ball.json|https://github.com/Barbariandev/8Ball_miner",
-  "allways.json|https://api.all-ways.io/miners/leaderboard",
-  "bitmind.json|https://api.bitmind.ai/health",
-  "gradients.json|https://api.gradients.io/v1/network/status",
 ]);
 
 // Build the set of (netuid, normalized-url) keys for native-chain candidates that

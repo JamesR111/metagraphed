@@ -18,6 +18,7 @@ import { Route as LeaderboardsRouteImport } from './routes/leaderboards'
 import { Route as HealthRouteImport } from './routes/health'
 import { Route as GraphqlRouteImport } from './routes/graphql'
 import { Route as GapsRouteImport } from './routes/gaps'
+import { Route as FeedsRouteImport } from './routes/feeds'
 import { Route as ExplorerRouteImport } from './routes/explorer'
 import { Route as EndpointsRouteImport } from './routes/endpoints'
 import { Route as ChainEventsRouteImport } from './routes/chain-events'
@@ -83,6 +84,11 @@ const GraphqlRoute = GraphqlRouteImport.update({
 const GapsRoute = GapsRouteImport.update({
   id: '/gaps',
   path: '/gaps',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedsRoute = FeedsRouteImport.update({
+  id: '/feeds',
+  path: '/feeds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExplorerRoute = ExplorerRouteImport.update({
@@ -198,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/chain-events': typeof ChainEventsRoute
   '/endpoints': typeof EndpointsRoute
   '/explorer': typeof ExplorerRoute
+  '/feeds': typeof FeedsRoute
   '/gaps': typeof GapsRoute
   '/graphql': typeof GraphqlRoute
   '/health': typeof HealthRoute
@@ -230,6 +237,7 @@ export interface FileRoutesByTo {
   '/chain-events': typeof ChainEventsRoute
   '/endpoints': typeof EndpointsRoute
   '/explorer': typeof ExplorerRoute
+  '/feeds': typeof FeedsRoute
   '/gaps': typeof GapsRoute
   '/graphql': typeof GraphqlRoute
   '/health': typeof HealthRoute
@@ -263,6 +271,7 @@ export interface FileRoutesById {
   '/chain-events': typeof ChainEventsRoute
   '/endpoints': typeof EndpointsRoute
   '/explorer': typeof ExplorerRoute
+  '/feeds': typeof FeedsRoute
   '/gaps': typeof GapsRoute
   '/graphql': typeof GraphqlRoute
   '/health': typeof HealthRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/chain-events'
     | '/endpoints'
     | '/explorer'
+    | '/feeds'
     | '/gaps'
     | '/graphql'
     | '/health'
@@ -329,6 +339,7 @@ export interface FileRouteTypes {
     | '/chain-events'
     | '/endpoints'
     | '/explorer'
+    | '/feeds'
     | '/gaps'
     | '/graphql'
     | '/health'
@@ -361,6 +372,7 @@ export interface FileRouteTypes {
     | '/chain-events'
     | '/endpoints'
     | '/explorer'
+    | '/feeds'
     | '/gaps'
     | '/graphql'
     | '/health'
@@ -394,6 +406,7 @@ export interface RootRouteChildren {
   ChainEventsRoute: typeof ChainEventsRoute
   EndpointsRoute: typeof EndpointsRoute
   ExplorerRoute: typeof ExplorerRoute
+  FeedsRoute: typeof FeedsRoute
   GapsRoute: typeof GapsRoute
   GraphqlRoute: typeof GraphqlRoute
   HealthRoute: typeof HealthRoute
@@ -483,6 +496,13 @@ declare module '@tanstack/react-router' {
       path: '/gaps'
       fullPath: '/gaps'
       preLoaderRoute: typeof GapsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feeds': {
+      id: '/feeds'
+      path: '/feeds'
+      fullPath: '/feeds'
+      preLoaderRoute: typeof FeedsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/explorer': {
@@ -642,6 +662,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChainEventsRoute: ChainEventsRoute,
   EndpointsRoute: EndpointsRoute,
   ExplorerRoute: ExplorerRoute,
+  FeedsRoute: FeedsRoute,
   GapsRoute: GapsRoute,
   GraphqlRoute: GraphqlRoute,
   HealthRoute: HealthRoute,

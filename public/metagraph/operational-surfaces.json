@@ -10,7 +10,7 @@
     "subtensor-wss"
   ],
   "schema_version": 1,
-  "surface_count": 237,
+  "surface_count": 246,
   "surfaces": [
     {
       "auth_required": false,
@@ -1994,6 +1994,42 @@
     },
     {
       "auth_required": false,
+      "authority": "community",
+      "kind": "data-artifact",
+      "netuid": 24,
+      "probe": {
+        "expect": "html",
+        "method": "HEAD",
+        "timeout_ms": 10000
+      },
+      "provider": "silx-labs",
+      "public_safe": true,
+      "subnet_name": "Quasar",
+      "subnet_slug": "sn-24",
+      "surface_id": "sn-24-quasar-training-corpus",
+      "surface_key": "srf-25089541aa0cece3",
+      "url": "https://huggingface.co/datasets/silx-ai/Quasar-SN3"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "subnet-api",
+      "netuid": 24,
+      "probe": {
+        "expect": "json",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "taomarketcap",
+      "public_safe": true,
+      "subnet_name": "Quasar",
+      "subnet_slug": "sn-24",
+      "surface_id": "sn-24-taomarketcap-subnet-api",
+      "surface_key": "srf-4262382b60db3bb7",
+      "url": "https://api.taomarketcap.com/public/v1/subnets/24"
+    },
+    {
+      "auth_required": false,
       "authority": "registry-observed",
       "kind": "data-artifact",
       "netuid": 24,
@@ -2085,6 +2121,96 @@
     {
       "auth_required": false,
       "authority": "community",
+      "kind": "data-artifact",
+      "netuid": 27,
+      "probe": {
+        "expect": "any",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "nodexo",
+      "public_safe": true,
+      "subnet_name": "NI Compute",
+      "subnet_slug": "sn-27",
+      "surface_id": "sn-27-nodexo-data-artifact",
+      "surface_key": "srf-ea522b0af36302c6",
+      "url": "https://raw.githubusercontent.com/neuralinternet/SN27-opencompute/main/config.yaml"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "subnet-api",
+      "netuid": 27,
+      "probe": {
+        "expect": "json",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "taomarketcap",
+      "public_safe": true,
+      "subnet_name": "NI Compute",
+      "subnet_slug": "sn-27",
+      "surface_id": "sn-27-taomarketcap-subnet-api",
+      "surface_key": "srf-ee8eb6593986da9c",
+      "url": "https://api.taomarketcap.com/public/v1/subnets/27"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "data-artifact",
+      "netuid": 28,
+      "probe": {
+        "expect": "any",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "gm",
+      "public_safe": true,
+      "subnet_name": "gm",
+      "subnet_slug": "gm",
+      "surface_id": "sn-28-gm-envoy-config",
+      "surface_key": "srf-dbd6c94b497c64e5",
+      "url": "https://raw.githubusercontent.com/taostat/gm-miner/refs/heads/main/image/envoy.yaml"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "subnet-api",
+      "netuid": 28,
+      "probe": {
+        "expect": "any",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "gm",
+      "public_safe": true,
+      "subnet_name": "gm",
+      "subnet_slug": "gm",
+      "surface_id": "sn-28-gm-health",
+      "surface_key": "srf-6c21702de3e16e33",
+      "url": "https://saygm.com/healthz"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "subnet-api",
+      "netuid": 28,
+      "probe": {
+        "expect": "json",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "gm",
+      "public_safe": true,
+      "subnet_name": "gm",
+      "subnet_slug": "gm",
+      "surface_id": "sn-28-gm-subnet-api",
+      "surface_key": "srf-f7b80bdc1145be6d",
+      "url": "https://api.saygm.com/v1/models"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
       "kind": "subnet-api",
       "netuid": 29,
       "probe": {
@@ -2117,6 +2243,42 @@
       "surface_id": "sn-29-coldint-fineweb-dataset",
       "surface_key": "srf-f51c73d17f954447",
       "url": "https://huggingface.co/datasets/HuggingFaceFW/fineweb-edu-score-2"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "data-artifact",
+      "netuid": 29,
+      "probe": {
+        "expect": "any",
+        "method": "GET",
+        "timeout_ms": 10000
+      },
+      "provider": "coldint",
+      "public_safe": true,
+      "subnet_name": "Coldint",
+      "subnet_slug": "sn-29",
+      "surface_id": "sn-29-coldint-min-compute",
+      "surface_key": "srf-4971d640d83f3a53",
+      "url": "https://raw.githubusercontent.com/coldint/coldint_validator/a5860df87847173842772a2c234dad8a4ff87727/min_compute.yml"
+    },
+    {
+      "auth_required": false,
+      "authority": "community",
+      "kind": "data-artifact",
+      "netuid": 32,
+      "probe": {
+        "expect": "html",
+        "method": "HEAD",
+        "timeout_ms": 10000
+      },
+      "provider": "its-ai",
+      "public_safe": true,
+      "subnet_name": "ItsAI",
+      "subnet_slug": "sn-32",
+      "surface_id": "sn-32-its-ai-data-artifact",
+      "surface_key": "srf-fee0506d737d45d0",
+      "url": "https://huggingface.co/spaces/sergak0/ai-detection-leaderboard"
     },
     {
       "auth_required": false,

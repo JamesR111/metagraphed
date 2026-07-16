@@ -218,6 +218,18 @@ async function verifyMeta(env) {
 // outbound probes. An agent (or the verify_integration MCP tool) calls this to
 // confirm "callable right now" before wiring.
 export async function handleSurfaceVerify(request, env, surfaceId, ctx = {}) {
+  if (request.method !== "GET") {
+    return errorResponse(
+      "method_not_allowed",
+      "Surface verify only accepts GET requests.",
+      405,
+      {},
+      {
+        allow: "GET, OPTIONS",
+      },
+    );
+  }
+
   if (env.RPC_RATE_LIMITER?.limit) {
     const clientKey = `verify:${resolveClientIp(request)}`;
     const { success } = await env.RPC_RATE_LIMITER.limit({ key: clientKey });

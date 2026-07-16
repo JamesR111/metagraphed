@@ -125,9 +125,9 @@ Refreshed weekly by [`.github/workflows/gittensor-impact.yml`](.github/workflows
 
 <!-- BEGIN:REGISTRY-CATALOG -->
 
-**129 curated subnets** — 116 with a site, 44 with docs, 116 with a public repo. Live health, search, and the full list (every active subnet, not just the curated ones) at **[metagraph.sh](https://metagraph.sh)**; per-subnet JSON at `https://api.metagraph.sh/api/v1/subnets/{netuid}`.
+**129 curated subnets** — 116 with a site, 45 with docs, 116 with a public repo. Live health, search, and the full list (every active subnet, not just the curated ones) at **[metagraph.sh](https://metagraph.sh)**; per-subnet JSON at `https://api.metagraph.sh/api/v1/subnets/{netuid}`.
 
-**Focus areas:** `data` 7 · `compute` 6 · `defi` 5 · `inference` 5 · `data-artifact` 2 · `decentralized-training` 2 · `depin` 2 · `finance` 2 · `language-models` 2 · `mcp` 2 · `prediction-market` 2 · `quantum` 2
+**Focus areas:** `compute` 7 · `data` 7 · `defi` 5 · `inference` 5 · `computer-vision` 2 · `dashboard` 2 · `data-artifact` 2 · `decentralized-training` 2 · `depin` 2 · `finance` 2 · `language-models` 2 · `mcp` 2
 
 - **[root](https://metagraph.sh/subnets/0)** `SN0` — `chain-rpc` · [site](https://bittensor.com) · [docs](https://docs.learnbittensor.org/concepts/bittensor-networks) · [repo](https://github.com/opentensor/subtensor)
 - **[Apex](https://metagraph.sh/subnets/1)** `SN1` · [site](https://apex.macrocosmos.ai/) · [docs](https://docs.macrocosmos.ai/subnets/subnet-1-apex) · [repo](https://github.com/macrocosm-os/apex)
@@ -155,8 +155,8 @@ Refreshed weekly by [`.github/workflows/gittensor-impact.yml`](.github/workflows
 - **[Trishool](https://metagraph.sh/subnets/23)** `SN23` — `subnet-api-observed` · [site](https://trishool.ai/) · [repo](https://github.com/TrishoolAI/trishool-phase2)
 - **[Quasar](https://metagraph.sh/subnets/24)** `SN24` — `language-models` `model-artifacts` · [site](https://silxinc.com/) · [docs](https://github.com/SILX-LABS/QUASAR-SUBNET/blob/main/README.md) · [repo](https://github.com/SILX-LABS/QUASAR-SUBNET)
 - **[Mainframe](https://metagraph.sh/subnets/25)** `SN25` — `compute` · [site](https://macrocosmos.ai/sn25) · [repo](https://github.com/macrocosm-os/mainframe)
-- **[Perturb](https://metagraph.sh/subnets/26)** `SN26` · [site](https://www.perturbai.io/) · [repo](https://github.com/0xsigurd/Perturb)
-- **[NI Compute](https://metagraph.sh/subnets/27)** `SN27`
+- **[Perturb](https://metagraph.sh/subnets/26)** `SN26` — `adversarial-robustness` `computer-vision` · [site](https://www.perturbai.io/) · [docs](https://www.perturbai.io/whitepaper) · [repo](https://github.com/0xsigurd/Perturb)
+- **[NI Compute](https://metagraph.sh/subnets/27)** `SN27` — `compute` `dashboard`
 - **[gm](https://metagraph.sh/subnets/28)** `SN28` — `llm-inference` `marketplace` `tee` · [site](https://saygm.com/) · [repo](https://github.com/taostat/gm-miner)
 - **[Coldint](https://metagraph.sh/subnets/29)** `SN29` — `data` `distributed-training` · [site](https://coldint.io/) · [docs](https://github.com/coldint/coldint_validator/blob/main/README.md) · [repo](https://github.com/coldint/coldint_validator)
 - **[Endure Network](https://metagraph.sh/subnets/30)** `SN30` — `defi` `risk-intelligence` · [site](https://endure.network/) · [docs](https://docs.endure.network/)
